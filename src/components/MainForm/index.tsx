@@ -18,6 +18,8 @@ export function MainForm() {
   const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
 
+  const lastTaskName = state.tasks[state.tasks.length - 1]?.name || '';
+
   function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     showMessage.dismiss();
@@ -59,6 +61,8 @@ export function MainForm() {
           placeholder='Ex: estudar para a prova'
           ref={taskNameInput}
           disabled={!!state.activeTask}
+          defaultValue={lastTaskName}
+          autoComplete='off'
         ></DefaultInput>
       </div>
 
