@@ -1,14 +1,13 @@
-import './styles/theme.css';
-import './styles/global.css';
-
-import { Home } from './pages/Home';
-import { TaskContextProvider } from './Contexts/TaskContext/taskContextProvider';
 import { Bounce, ToastContainer } from 'react-toastify';
 
-export function App() {
+type MessagesContainerProps = {
+  children: React.ReactNode;
+};
+
+export function MessagesContainer(children: MessagesContainerProps) {
   return (
-    <TaskContextProvider>
-      <Home />
+    <>
+      {children}
 
       <ToastContainer
         position='top-center'
@@ -23,6 +22,6 @@ export function App() {
         theme='light'
         transition={Bounce}
       />
-    </TaskContextProvider>
+    </>
   );
 }
