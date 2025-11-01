@@ -9,11 +9,13 @@ import { formatDate } from '../../utils/formatDate';
 import { getTaskStatus } from '../../utils/getTaskStatus';
 import { useEffect, useState } from 'react';
 import { sortTasks, type SortTasksOptions } from '../../utils/sortTasks';
+import { showMessage } from '../../adapters/showMessage';
 import { TaskActionTypes } from '../../Contexts/TaskContext/taskActions';
 
 export function History() {
   const { state, dispatch } = useTaskContext();
   const hasTasks = state.tasks.length > 0;
+  const [confirmClearHistory, setConfirmClearHistory] = useState(false);
 
   const [sortTasksOptions, setSortTaskOptions] = useState<SortTasksOptions>(
     () => {
@@ -36,6 +38,22 @@ export function History() {
     }));
   }, [state.tasks]);
 
+  useEffect(() => {
+    if (!confirmClearHistory) return;
+    setConfirmClearHistory(false);
+    dispatch({ type: TaskActionTypes.RESET_STATE });
+  }, [confirmClearHistory, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      showMessage.dismiss();
+    };
+  }, []);
+
+  useEffect(() => {
+    document.title = 'Histórico - Focus Pomodoro';
+  });
+
   function handleSortTasks({ field }: Pick<SortTasksOptions, 'field'>) {
     const newDirection = sortTasksOptions.direction === 'desc' ? 'asc' : 'desc';
 
@@ -51,8 +69,13 @@ export function History() {
   }
 
   function handleResetHistory() {
-    if (!confirm('Tem certeza que deseja apagar o histórico?')) return;
-    dispatch({ type: TaskActionTypes.RESET_STATE });
+    showMessage.dismiss();
+    showMessage.confirm(
+      'Tem certeza que deseja apagar o histórico?',
+      confirmation => {
+        setConfirmClearHistory(confirmation);
+      },
+    );
   }
 
   return (
